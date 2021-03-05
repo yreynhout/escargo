@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "name": "escargo",
+  "author": "Yves Reynhout",
+  "devDependencies": {
+    "tailwindcss-cli": "^0.1.2",
+    "uglify-js": "3.12.8"
+  }
+}

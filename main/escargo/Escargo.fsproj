@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>Escargo</RootNamespace>
+    <AssemblyName>Escargo</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="RenderXml.fs" />
+    <Compile Include="Styled.fs" />
+    <Compile Include="Page.fs" />
+    <Compile Include="Meta.fs" />
+    <Compile Include="FavIcon.fs" />
+    <Compile Include="Tailwind.fs" />
+    <Compile Include="Cascading.fs" />
+    <Compile Include="PlausibleAnalytics.fs" />
+    <Compile Include="Home.fs" />
+    <Compile Include="SiteMap.fs" />
+    <Compile Include="Robots.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Argu" Version="6.1.1" />
+    <PackageReference Include="Giraffe.ViewEngine" Version="1.3.0" />
+  </ItemGroup>
+
+</Project>

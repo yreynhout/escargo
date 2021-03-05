@@ -1,0 +1,43 @@
+name: release website
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+    steps:
+      # checkout the code
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      # set up dotnet based on global.json
+      - uses: actions/setup-dotnet@v1
+      # set up nodejs
+      - uses: actions/setup-node@v2
+      # cache the node modules in use
+      - name: cache node_modules
+        id: cache-node_modules
+        uses: actions/cache@v2
+        with:
+          path: main/node_modules
+          key: node_modules-${{ hashFiles('main/package-lock.json') }}
+      # restore npm packages
+      - name: npm ci
+        if: steps.cache-node_modules.outputs.cache-hit != 'true'
+        run: npm ci
+        working-directory: main
+      # release it
+      - name: make ci
+        run: make ci
+        working-directory: main
+        # TODO: Setup Secrets
+        # env:
+        #   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        #   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        #   AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
