@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <Compile Include="RenderXml.fs" />
-    <Compile Include="Styled.fs" />
     <Compile Include="Page.fs" />
     <Compile Include="Meta.fs" />
     <Compile Include="FavIcon.fs" />

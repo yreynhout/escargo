@@ -3,6 +3,7 @@
   "name": "escargo",
   "author": "Yves Reynhout",
   "devDependencies": {
+    "@tailwindcss/forms": "^0.2.1",
     "tailwindcss-cli": "^0.1.2",
     "uglify-js": "3.12.8"
   }

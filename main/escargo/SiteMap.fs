@@ -24,11 +24,15 @@ module SiteMap =
                  schemaLocation
                      "http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" ] [
             url [] [
-                loc [] [ str ("https://" + domain + "/") ]
+                loc [] [
+                    str ("https://" + domain + "/")
+                ]
                 lastmod [] [ str now ]
             ]
             url [] [
-                loc [] [ str ("https://" + domain + "/home.html") ]
+                loc [] [
+                    str ("https://" + domain + "/home.html")
+                ]
                 lastmod [] [ str now ]
             ]
         ]

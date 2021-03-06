@@ -13,6 +13,12 @@ module.exports = {
       width: {
         "320": "320px"
       },
+      colors: {
+        "primary": "#dcd2ae"
+      },
+      backgroundColor: {
+        "primary": "#dcd2ae"
+      },
       backgroundImage: {
         "composition8": "url('../images/composition8.jpg')"
       },
@@ -21,5 +27,7 @@ module.exports = {
   variants: {
     extend: {},
   },
-  plugins: []
+  plugins: [
+    require('@tailwindcss/forms'),
+  ]
 }

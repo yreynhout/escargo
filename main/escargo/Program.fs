@@ -37,8 +37,7 @@ module Program =
                 (fun (name, document) -> File.WriteAllText(Path.Combine(path, name), RenderXml.xmlDocument document))
 
             [ Robots.file domain ]
-            |> List.iter 
-                (fun (name, contents) -> File.WriteAllText(Path.Combine(path, name), contents))
+            |> List.iter (fun (name, contents) -> File.WriteAllText(Path.Combine(path, name), contents))
 
             0
         with e ->

@@ -25,6 +25,14 @@ serve:
 	cp -r -p static .dist
 	# Generate tailwind stylesheet
 	npx tailwindcss-cli build -o .dist/css/tailwind.css
-	# Render and serve html documents
-	dotnet watch run -c Release -p escargo/Escargo.fsproj -- --output=../.dist --domain=knowledgecrunchers.io \
-	& dotnet serve -o -d .dist
+	# Render html documents
+	dotnet run -c Release -p escargo/Escargo.fsproj -- --output=.dist --domain=knowledgecrunchers.io
+	# Start watching, rendering and serving html documents
+	make -j 2 dotnet-serve dotnet-watch
+dotnet-serve:
+	dotnet serve -o -d .dist
+dotnet-watch:
+	dotnet watch run -c Release -p escargo/Escargo.fsproj -- --output=../.dist --domain=knowledgecrunchers.io
+format:
+	# Format F# code
+	dotnet fantomas escargo/
