@@ -1,4 +1,4 @@
-namespace Escargo
+namespace Shell
 
 open System
 

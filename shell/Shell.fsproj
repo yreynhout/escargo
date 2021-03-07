@@ -3,14 +3,15 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>Escargo</RootNamespace>
-    <AssemblyName>Escargo</AssemblyName>
+    <RootNamespace>Shell</RootNamespace>
+    <AssemblyName>Shell</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Include="RenderXml.fs" />
     <Compile Include="Page.fs" />
     <Compile Include="Meta.fs" />
+    <Compile Include="GoogleRecaptcha.fs" />
     <Compile Include="FavIcon.fs" />
     <Compile Include="Tailwind.fs" />
     <Compile Include="Cascading.fs" />

@@ -1,4 +1,4 @@
-name: release website
+name: release it
 
 on:
   push:
@@ -25,17 +25,15 @@ jobs:
         id: cache-node_modules
         uses: actions/cache@v2
         with:
-          path: main/node_modules
-          key: node_modules-${{ hashFiles('main/package-lock.json') }}
+          path: node_modules
+          key: node_modules-${{ hashFiles('package-lock.json') }}
       # restore npm packages
       - name: npm ci
         if: steps.cache-node_modules.outputs.cache-hit != 'true'
         run: npm ci
-        working-directory: main
       # release it
       - name: make ci
         run: make ci
-        working-directory: main
         # TODO: Setup Secrets
         # env:
         #   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}

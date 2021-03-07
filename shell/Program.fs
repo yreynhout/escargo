@@ -1,4 +1,4 @@
-namespace Escargo
+namespace Shell
 
 open System.IO
 
@@ -9,11 +9,13 @@ module Program =
     type Arguments =
         | [<Mandatory; EqualsAssignmentOrSpaced>] Output of path: string
         | [<Mandatory; EqualsAssignmentOrSpaced>] Domain of name: string
+        | [<Mandatory; EqualsAssignmentOrSpaced>] GoogleRecaptcha of key: string
         interface IArgParserTemplate with
             member this.Usage =
                 match this with
                 | Output _ -> "specify an output directory."
                 | Domain _ -> "specify a domain name."
+                | GoogleRecaptcha _ -> "specify a Google recaptcha site key."
 
     [<EntryPoint>]
     let main argv =
@@ -26,8 +28,9 @@ module Program =
 
             let path = arguments.GetResult(Output)
             let domain = arguments.GetResult(Domain)
+            let key = arguments.GetResult(GoogleRecaptcha)
 
-            [ Home.file domain ]
+            [ Home.file domain key]
             |> List.iter
                 (fun (name, document) ->
                     File.WriteAllText(Path.Combine(path, name), RenderView.AsString.htmlDocument document))
