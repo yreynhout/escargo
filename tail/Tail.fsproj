@@ -16,6 +16,7 @@
   <ItemGroup>
     <Compile Include="AppHandlers.fs" />
     <Compile Include="Setup.fs" />
+    <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="appsettings.Development.json">

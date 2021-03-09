@@ -1,0 +1,3 @@
+name: escargo
+runtime: dotnet
+description: Deploying the DDD-CQRS-Slack automation infrastructure

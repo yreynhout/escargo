@@ -1,0 +1,4 @@
+config:
+  aws:profile: knowledgecrunchers
+  aws:region: eu-central-1
+  escargo:domain: knowledgecrunchers.io

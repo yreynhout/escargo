@@ -30,7 +30,7 @@ module Program =
             let domain = arguments.GetResult(Domain)
             let key = arguments.GetResult(GoogleRecaptcha)
 
-            [ Home.file domain key]
+            [ Home.file domain key ]
             |> List.iter
                 (fun (name, document) ->
                     File.WriteAllText(Path.Combine(path, name), RenderView.AsString.htmlDocument document))

@@ -36,3 +36,7 @@ dotnet-watch:
 format:
 	# Format F# code
 	dotnet fantomas shell/
+	# Format F# code
+	#dotnet fantomas tail/
+	# Format F# code
+	dotnet fantomas winkle/
