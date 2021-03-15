@@ -7,6 +7,7 @@ open Pulumi.Aws
 open Pulumi.Aws.S3
 open Pulumi.Aws.S3.Inputs
 open Pulumi.Aws.Route53
+open Pulumi.Aws.Route53.Inputs
 open Pulumi.Aws.CloudFront
 open Pulumi.Aws.CloudFront.Inputs
 open Pulumi.Aws.Acm
@@ -19,15 +20,14 @@ module Program =
     let domain = localConfig.Require(Config.domain)
     let awsConfig = Pulumi.Config("aws")
     let profile = awsConfig.Require("profile")
+
     let useast1 =
-      Provider(Region.USEast1.ToString(), 
-        ProviderArgs(
-          Profile = input profile,
-          Region = input (Region.USEast1.ToString())
-        )
+      Provider(
+        Region.USEast1.ToString(),
+        ProviderArgs(Profile = input profile, Region = input (Region.USEast1.ToString()))
       )
-    
-    // Provision a certificate for the domain
+
+    // Provision a certificate for the domain (in us-east-1)
     let certificate =
       Certificate(
         domain,
@@ -78,7 +78,7 @@ module Program =
           )
         ) ]
 
-    let certificationValidation =
+    let certificateValidation =
       CertificateValidation(
         domain,
         CertificateValidationArgs(
@@ -88,7 +88,8 @@ module Program =
               certificateValidationRecords
               |> List.map (fun record -> io record.Fqdn)
             )
-        )
+        ),
+        CustomResourceOptions(Provider = useast1)
       )
 
     // Provision a bucket to host the static website in
@@ -113,7 +114,6 @@ module Program =
       )
 
     // Distribute that website / bucket to all edges of the world
-    let s3OriginId = "S3-" + domain
 
     let distribution =
       Distribution(
@@ -126,8 +126,7 @@ module Program =
           ViewerCertificate =
             input (
               DistributionViewerCertificateArgs(
-                AcmCertificateArn = io certificate.Arn,
-                CloudfrontDefaultCertificate = input true,
+                AcmCertificateArn = io certificateValidation.CertificateArn,
                 MinimumProtocolVersion = input "TLSv1.2_2019",
                 SslSupportMethod = input "sni-only"
               )
@@ -148,18 +147,35 @@ module Program =
                               input "GET"
                               input "OPTIONS" ],
                 Compress = input true,
+                ForwardedValues =
+                  input (
+                    DistributionDefaultCacheBehaviorForwardedValuesArgs(
+                      Cookies =
+                        input (DistributionDefaultCacheBehaviorForwardedValuesCookiesArgs(Forward = input "none")),
+                      QueryString = input false
+                    )
+                  ),
                 DefaultTtl = input 3600,
                 MaxTtl = input 86400,
                 MinTtl = input 300,
-                TargetOriginId = input s3OriginId,
+                TargetOriginId = io staticSiteBucket.Arn,
                 ViewerProtocolPolicy = input "redirect-to-https"
               )
             ),
           Origins =
             inputList [ input (
                           DistributionOriginArgs(
+                            OriginId = io staticSiteBucket.Arn,
                             DomainName = io staticSiteBucket.WebsiteEndpoint,
-                            OriginId = input s3OriginId
+                            CustomOriginConfig =
+                              input (
+                                DistributionOriginCustomOriginConfigArgs(
+                                  OriginProtocolPolicy = input "http-only",
+                                  HttpPort = input 80,
+                                  HttpsPort = input 443,
+                                  OriginSslProtocols = inputList [ input "TLSv1.2" ]
+                                )
+                              )
                           )
                         ) ],
           Restrictions =
@@ -172,10 +188,45 @@ module Program =
         )
       )
 
-    dict [ 
-      ("staticSiteBucket.WebsiteDomain", staticSiteBucket.WebsiteDomain :> obj) 
-      ("staticSiteBucket.WebsiteEndpoint", staticSiteBucket.WebsiteEndpoint :> obj) 
-    ]
+    let distributionAliasRecords =
+      [ Record(
+          domain,
+          RecordArgs(
+            ZoneId = io zone.ZoneId,
+            Name = input domain,
+            Type = inputUnion2Of2 RecordType.A,
+            Aliases =
+              inputList [ input (
+                            RecordAliasArgs(
+                              Name = io distribution.DomainName,
+                              ZoneId = io distribution.HostedZoneId,
+                              EvaluateTargetHealth = input true
+                            )
+                          ) ]
+          )
+        )
+        Record(
+          ("www." + domain),
+          RecordArgs(
+            ZoneId = io zone.ZoneId,
+            Name = input ("www." + domain),
+            Type = inputUnion2Of2 RecordType.A,
+            Aliases =
+              inputList [ input (
+                            RecordAliasArgs(
+                              Name = io distribution.DomainName,
+                              ZoneId = io distribution.HostedZoneId,
+                              EvaluateTargetHealth = input true
+                            )
+                          ) ]
+          )
+        ) ]
+
+    dict [ ("staticSiteBucket.WebsiteDomain", staticSiteBucket.WebsiteDomain :> obj)
+           ("staticSiteBucket.WebsiteEndpoint", staticSiteBucket.WebsiteEndpoint :> obj)
+           ("staticSiteBucket.BucketDomainName", staticSiteBucket.BucketDomainName :> obj)
+           //("staticSiteBucket.Website", staticSiteBucket.Website :> obj)
+            ]
 
   [<EntryPoint>]
   let main _ = Deployment.run specification
