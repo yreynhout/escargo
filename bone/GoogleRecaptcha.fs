@@ -77,9 +77,13 @@ module GoogleRecaptcha =
                     log.LogWarning("The received response when verifying this token {Token} indicates failure.", token)
 
                 return false
-          with
-          | error ->
-            log.LogError(error, "The received response when verifying this token {Token} could not be deserialized.", token)
+          with error ->
+            log.LogError(
+              error,
+              "The received response when verifying this token {Token} could not be deserialized.",
+              token
+            )
+
             return false
       | _ ->
           log.LogWarning(

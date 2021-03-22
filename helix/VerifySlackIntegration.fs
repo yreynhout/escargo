@@ -8,6 +8,8 @@ open System.Net.Http
 
 open RichardSzalay.MockHttp
 
+open Bone.Slack
+
 open Microsoft.Extensions.Logging
 
 module VerifySlackIntegration =
@@ -30,7 +32,7 @@ module VerifySlackIntegration =
 
           use client = new HttpClient(handler)
 
-          let! can_redirect = Bone.Slack.can_redirect_to_invitation_url client log link
+          let! can_redirect = can_redirect_client client log link
 
           Expect.isTrue can_redirect "yet slack reports it can not be found or has expired"
         }
@@ -48,7 +50,7 @@ module VerifySlackIntegration =
 
           use client = new HttpClient(handler)
 
-          let! can_redirect = Bone.Slack.can_redirect_to_invitation_url client log link
+          let! can_redirect = can_redirect_client client log link
 
           Expect.isFalse can_redirect "yet slack reports it can still be found"
         }
@@ -66,7 +68,7 @@ module VerifySlackIntegration =
 
           use client = new HttpClient(handler)
 
-          let! can_redirect = Bone.Slack.can_redirect_to_invitation_url client log link
+          let! can_redirect = can_redirect_client client log link
 
           Expect.isFalse can_redirect "yet slack reports it has not expired"
         } ]

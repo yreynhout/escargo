@@ -30,7 +30,7 @@ module Slack =
     | true -> Some NotActiveLink
     | false -> None
 
-  let can_redirect_to_invitation_url (client: HttpClient) (log: ILogger) (invitationUrl: Uri) =
+  let can_redirect_client (client: HttpClient) (log: ILogger) (invitationUrl: Uri) =
     task {
       let! response = client.GetAsync(invitationUrl)
 

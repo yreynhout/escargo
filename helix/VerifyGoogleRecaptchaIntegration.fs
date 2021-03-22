@@ -35,8 +35,10 @@ module VerifyGoogleRecaptchaIntegration =
                   ChallengeTimestamp = DateTimeOffset.UtcNow.ToString("yyyy-MM-dd\THH:mm:ssZZ")
                   Hostname = ""
                   ErrorCodes = Some [ "invalid-input-response" ] },
-                options)
-            ) |> ignore
+                options
+              )
+            )
+          |> ignore
 
           use client = new HttpClient(handler)
 
@@ -59,13 +61,14 @@ module VerifyGoogleRecaptchaIntegration =
                   ChallengeTimestamp = DateTimeOffset.UtcNow.ToString("yyyy-MM-dd\THH:mm:ssZZ")
                   Hostname = ""
                   ErrorCodes = None },
-                options)
-            ) |> ignore
+                options
+              )
+            )
+          |> ignore
 
           use client = new HttpClient(handler)
 
           let! can_trust = can_trust_client client log secret valid_token
 
           Expect.isTrue can_trust "yet Google reports the token and request can not be trusted"
-        }
-        ]
+        } ]
