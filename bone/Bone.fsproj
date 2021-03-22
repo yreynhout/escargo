@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>Bone</RootNamespace>
+    <AssemblyName>Bone</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="GoogleRecaptcha.fs" />
+    <Compile Include="Slack.fs" />
+    <Compile Include="JoinSlack.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AngleSharp" Version="0.14.0" />
+    <PackageReference Include="FSharp.SystemTextJson" Version="0.16.6" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
+    <PackageReference Include="Ply" Version="0.3.1" />
+  </ItemGroup>
+
+</Project>

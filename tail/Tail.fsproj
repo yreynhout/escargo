@@ -10,23 +10,15 @@
     <AWSProjectType>Lambda</AWSProjectType>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Giraffe" Version="3.4.0" />
+    <PackageReference Include="FsToolkit.ErrorHandling" Version="2.1.2" />
+    <PackageReference Include="Giraffe" Version="5.0.0-rc-6" />
     <PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="5.3.0" />
+    <PackageReference Include="Ply" Version="0.3.1" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppHandlers.fs" />
-    <Compile Include="Setup.fs" />
+    <Compile Include="MediaType.fs" />
+    <Compile Include="Problems.fs" />
+    <Compile Include="JoinSlack.fs" />
     <Compile Include="Program.fs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="appsettings.Development.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="appsettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="aws-lambda-tools-defaults.json" />
-    <None Include="Readme.md" />
-    <None Include="serverless.template" />
   </ItemGroup>
 </Project>

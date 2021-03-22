@@ -10,17 +10,19 @@ module Program =
     | [<Mandatory; EqualsAssignmentOrSpaced>] Output of path: string
     | [<Mandatory; EqualsAssignmentOrSpaced>] Domain of name: string
     | [<Mandatory; EqualsAssignmentOrSpaced>] GoogleRecaptcha of key: string
+    | [<Mandatory; EqualsAssignmentOrSpaced>] Api of endpoint: string
     interface IArgParserTemplate with
       member this.Usage =
         match this with
         | Output _ -> "specify an output directory."
         | Domain _ -> "specify a domain name."
         | GoogleRecaptcha _ -> "specify a Google recaptcha site key."
+        | Api _ -> "specify the api endpoint."
 
   [<EntryPoint>]
   let main argv =
     let parser =
-      ArgumentParser.Create<Arguments>(programName = "escargo")
+      ArgumentParser.Create<Arguments>(programName = "shell")
 
     try
       let arguments =
@@ -29,8 +31,9 @@ module Program =
       let path = arguments.GetResult(Output)
       let domain = arguments.GetResult(Domain)
       let key = arguments.GetResult(GoogleRecaptcha)
+      let endpoint = arguments.GetResult(Api)
 
-      [ Home.file domain key ]
+      [ Home.file domain key endpoint ]
       |> List.iter
            (fun (name, document) ->
              File.WriteAllText(Path.Combine(path, name), RenderView.AsString.htmlDocument document))

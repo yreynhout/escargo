@@ -3,12 +3,14 @@ namespace Shell
 open Giraffe.ViewEngine
 
 module rec Home =
-  let private bodyContent =
+  let private bodyContent key =
     [ div [ _class "flex h-screen justify-center items-center" ] [
         div [ _class "flex opacity-95 w-1/2 h-1/2 min-w-320 min-h-320" ] [
           div [ _class "flex-1 bg-gray-900 rounded-l-lg w-1/2 h-full" ] [
-            img [ _class "mx-auto h-full"
-                  _src "images/slack-icon.svg" ]
+            div [ _id "slack-icon"; _class "h-full" ] [
+              img [ _class "mx-auto h-full"
+                    _src "images/slack-icon.svg" ]
+            ]
           ]
           div [ _class "flex-1 bg-gray-800 rounded-r-lg w-1/2 h-full px-4 py-12" ] [
             div [ _class "w-full h-full flex justify-center items-center" ] [
@@ -32,9 +34,13 @@ module rec Home =
                             _placeholder "Your email address" ]
                   ]
                   div [ _class "flex items-center justify-center" ] [
-                    button [ _type "submit"
+                    button [ _id "join"
+                             _type "submit"
+                             _data "sitekey" key
+                             _data "callback" "onSubmit"
+                             _data "action" "submit"
                              _class
-                               "inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-red-600 opacity-100 hover:bg-red-700 shadow-sm" ] [
+                               "g-recaptcha inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-red-600 opacity-100 hover:bg-red-700 shadow-sm disabled:opacity-50" ] [
                       str "Join"
                     ]
                   ]
@@ -45,7 +51,7 @@ module rec Home =
         ]
       ] ]
 
-  let private document domain key =
+  let private document domain key endpoint =
     html [ _lang "en"
            _class "m-0 p-0 w-full h-full bg-cover bg-composition8" ] [
       head
@@ -53,13 +59,14 @@ module rec Home =
         ([ Page.titled "DDD-CQRS-ES"
            FavIcon.links
            Meta.tags
-           GoogleRecaptcha.scripts key
+           GoogleRecaptcha.scripts
            PlausibleAnalytics.scripts domain
+           Javascript.scripts endpoint
            Tailwind.stylesheets
            Cascading.stylesheet ((nameof Home).ToLowerInvariant()) ]
          |> List.concat)
-      body [ _class "m-0 p-0 min-w-320 w-full h-full" ] bodyContent
+      body [ _class "m-0 p-0 min-w-320 w-full h-full" ] (bodyContent key)
     ]
 
-  let file domain key =
-    ((nameof Home).ToLowerInvariant() + ".html", document domain key)
+  let file domain key endpoint =
+    ((nameof Home).ToLowerInvariant() + ".html", document domain key endpoint)
